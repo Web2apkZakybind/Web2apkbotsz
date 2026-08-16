@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VaultCrypt · Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* ===== RESET & VARIABEL ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: #080c1a;
+            --bg-secondary: #0d1428;
+            --bg-card: rgba(20, 30, 58, 0.65);
+            --bg-card-hover: rgba(30, 45, 80, 0.75);
+            --border-glass: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(99, 102, 241, 0.25);
+            --text-primary: #f0f4ff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --gradient-1: linear-gradient(135deg, #4f46e5, #7c3aed);
+            --gradient-2: linear-gradient(135deg, #059669, #0d9488);
+            --gradient-3: linear-gradient(135deg, #d97706, #f59e0b);
+            --shadow-glow: 0 8px 32px rgba(79, 70, 229, 0.25);
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            --radius-lg: 28px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .bg-effects {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            animation: orbFloat 12s ease-in-out infinite alternate;
+        }
+        .bg-orb:nth-child(1) {
+            width: 400px; height: 400px;
+            background: #4f46e5;
+            top: -10%; left: -10%;
+            animation-delay: 0s;
+        }
+        .bg-orb:nth-child(2) {
+            width: 350px; height: 350px;
+            background: #059669;
+            bottom: -10%; right: -10%;
+            animation-delay: 4s;
+        }
+        .bg-orb:nth-child(3) {
+            width: 200px; height: 200px;
+            background: #7c3aed;
+            top: 40%; left: 50%;
+            animation-delay: 8s;
+            opacity: 0.15;
+        }
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+            100% { transform: translate(10px, -10px) scale(1.02); }
+        }
+
+        /* ===== GRID LINES ===== */
+        .grid-lines {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* ===== MAIN CARD ===== */
+        .glass-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 640px;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 28px 26px;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+        }
+        .glass-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-card), 0 0 60px rgba(79, 70, 229, 0.08);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+        .icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            background: rgba(99, 102, 241, 0.12);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            font-size: 24px;
+            margin-bottom: 10px;
+            transition: var(--transition);
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.2); }
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #818cf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            letter-spacing: 0.3px;
+        }
+        .subtitle i { margin-right: 4px; }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 9px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-btn i { font-size: 13px; }
+        .tab-btn.active {
+            background: var(--gradient-1);
+            color: #ffffff;
+            box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.45);
+        }
+        .tab-btn:not(.active):hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.04);
+        }
+
+        /* ===== FORM ===== */
+        .form-group { margin-bottom: 14px; }
+        label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        label i { font-size: 12px; color: var(--text-muted); }
+        textarea, input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-sm);
+            padding: 11px 14px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+        }
+        textarea:focus, input:focus {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+        }
+        textarea {
+            resize: none;
+            height: 76px;
+            line-height: 1.5;
+        }
+        textarea::placeholder, input::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* ===== PASSWORD WRAPPER ===== */
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper input { padding-right: 44px; }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            transition: var(--transition);
+        }
+        .toggle-password:hover { color: var(--text-secondary); }
+
+        /* ===== MORSE PREVIEW ===== */
+        .morse-preview {
+            background: rgba(15, 23, 42, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #a5b4fc;
+            min-height: 32px;
+            margin-top: 6px;
+            word-break: break-all;
+            transition: var(--transition);
+        }
+        .morse-preview.empty {
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+        }
+
+        /* ===== BUTTON ===== */
+        .action-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            background: var(--gradient-1);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .action-btn:hover::before { opacity: 1; }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(79, 70, 229, 0.45);
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .action-btn.decrypt-mode {
+            background: var(--gradient-2);
+            box-shadow: 0 8px 24px -6px rgba(5, 150, 105, 0.35);
+        }
+        .action-btn.decrypt-mode:hover {
+            box-shadow: 0 12px 28px -8px rgba(5, 150, 105, 0.5);
+        }
+        .action-btn.morse-mode {
+            background: var(--gradient-3);
+            box-shadow: 0 8px 24px -6px rgba(217, 119, 6, 0.35);
+        }
+        .action-btn.morse-mode:hover {
+            box-shadow: 0 12px 28px -8px rgba(217, 119, 6, 0.5);
+        }
+
+        /* ===== OUTPUT ===== */
+        .output-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .copy-btn:hover {
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.08);
+        }
+        #outputText {
+            font-family: 'Courier New', monospace;
+            color: #a5b4fc;
+            font-size: 12px;
+            min-height: 50px;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 99;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            font-size: 17px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-toggle:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        /* ===== TOAST ===== */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-sm);
+            padding: 10px 20px;
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.4s ease;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        #toast .icon { font-size: 16px; }
+
+        /* ===== LIGHT MODE ===== */
+        body.light-mode {
+            --bg-primary: #f0f4ff;
+            --bg-secondary: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.78);
+            --bg-card-hover: rgba(255, 255, 255, 0.9);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-glass: rgba(0, 0, 0, 0.06);
+            --border-glow: rgba(99, 102, 241, 0.2);
+        }
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        body.light-mode .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+        body.light-mode textarea,
+        body.light-mode input {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.06);
+            color: #0f172a;
+        }
+        body.light-mode textarea:focus,
+        body.light-mode input:focus {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.06);
+        }
+        body.light-mode .tabs { background: rgba(0, 0, 0, 0.04); }
+        body.light-mode .tab-btn:not(.active) { color: var(--text-secondary); }
+        body.light-mode .tab-btn:not(.active):hover { color: var(--text-primary); background: rgba(0,0,0,0.03); }
+        body.light-mode .morse-preview { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.04); color: #4f46e5; }
+        body.light-mode .morse-preview.empty { color: var(--text-muted); }
+        body.light-mode .output-section { border-color: rgba(0,0,0,0.06); }
+        body.light-mode #toast { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.06); color: #0f172a; }
+        body.light-mode .theme-toggle { background: rgba(255,255,255,0.85); color: #0f172a; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .glass-card { padding: 18px 14px; border-radius: 20px; }
+            h1 { font-size: 20px; }
+            .tab-btn { font-size: 10px; padding: 7px 6px; }
+            .tab-btn i { font-size: 11px; }
+            .action-btn { font-size: 12px; padding: 11px; }
+            textarea, input { font-size: 12px; padding: 9px 12px; }
+            .morse-preview { font-size: 11px; padding: 8px 10px; }
+            .icon-box { width: 44px; height: 44px; font-size: 18px; }
+            .header { margin-bottom: 16px; }
+        }
+        @media (max-width: 380px) {
+            .tab-btn { font-size: 9px; padding: 5px 4px; }
+            .tab-btn span { display: none; }
+            .tab-btn i { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== BACKGROUND EFFECTS ===== -->
+    <div class="bg-effects">
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+    </div>
+    <div class="grid-lines"></div>
+
+    <!-- ===== THEME TOGGLE ===== -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- ===== TOAST ===== -->
+    <div id="toast">
+        <span class="icon">✅</span>
+        <span id="toastMsg">Berhasil!</span>
+    </div>
+
+    <!-- ===== MAIN CARD ===== -->
+    <div class="glass-card">
+        <div class="header">
+            <div class="icon-box">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <h1>VaultCrypt</h1>
+            <p class="subtitle"><i class="fas fa-lock"></i> AES-GCM 256-bit · Morse Converter</p>
+        </div>
+
+        <!-- ===== TABS ===== -->
+        <div class="tabs">
+            <button id="tabEncrypt" class="tab-btn active" onclick="switchTab('encrypt')">
+                <i class="fas fa-lock"></i> <span>Enkripsi</span>
+            </button>
+            <button id="tabDecrypt" class="tab-btn" onclick="switchTab('decrypt')">
+                <i class="fas fa-unlock"></i> <span>Dekripsi</span>
+            </button>
+            <button id="tabMorse" class="tab-btn" onclick="switchTab('morse')">
+                <i class="fas fa-code"></i> <span>Morse</span>
+            </button>
+            <button id="tabUnmorse" class="tab-btn" onclick="switchTab('unmorse')">
+                <i class="fas fa-undo"></i> <span>Unmorse</span>
+            </button>
+        </div>
+
+        <div>
+            <div class="form-group">
+                <label for="inputText"><i class="fas fa-pen"></i> Pesan / Ciphertext</label>
+                <textarea id="inputText" placeholder="Ketik pesan rahasia Anda di sini..."></textarea>
+            </div>
+
+            <div class="form-group" id="passwordGroup">
+                <label for="inputPassword"><i class="fas fa-key"></i> Kata Sandi</label>
+                <div class="password-wrapper">
+                    <input type="password" id="inputPassword" placeholder="Masukkan kata sandi (min 2 karakter)...">
+                    <button class="toggle-password" onclick="togglePasswordVisibility()" aria-label="Toggle password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== MORSE PREVIEW ===== -->
+            <div id="morsePreviewContainer" style="display:none;">
+                <label><i class="fas fa-arrow-right"></i> Preview Morse</label>
+                <div class="morse-preview empty" id="morsePreview">Ketik pesan untuk lihat konversi...</div>
+            </div>
+
+            <button id="actionBtn" class="action-btn" onclick="processCrypto()">
+                <i class="fas fa-lock"></i> Proses Enkripsi
+            </button>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <label id="labelOutput" style="margin-bottom:0;"><i class="fas fa-clipboard"></i> Hasil</label>
+                    <button class="copy-btn" onclick="copyOutput()">
+                        <i class="fas fa-copy"></i> Salin
+                    </button>
+                </div>
+                <textarea id="outputText" readonly placeholder="Hasil akan muncul di sini..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== MORSE CODE TABLE =====
+        const MORSE_MAP = {
+            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+            'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+            'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+            'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+            'Y': '-.--', 'Z': '--..',
+            '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-',
+            '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+            ' ': '/', '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.',
+            '!': '-.-.--', '/': '-..-.', '(': '-.--.', ')': '-.--.-', '&': '.-...',
+            ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-',
+            '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.'
+        };
+        const REVERSE_MORSE = {};
+        for (let key in MORSE_MAP) REVERSE_MORSE[MORSE_MAP[key]] = key;
+
+        function textToMorse(text) {
+            return text.toUpperCase().split('').map(c => MORSE_MAP[c] || c).join(' ');
+        }
+        function morseToText(morse) {
+            return morse.split(' ').map(c => REVERSE_MORSE[c] || c).join('');
+        }
+
+        // ===== STATE =====
+        let currentMode = 'encrypt';
+        let isProcessing = false;
+
+        // ===== THEME TOGGLE =====
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggle');
+            body.classList.toggle('light-mode');
+            const isLight = body.classList.contains('light-mode');
+            btn.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            showToast(isLight ? '☀️ Light mode aktif' : '🌙 Dark mode aktif');
+        }
+
+        // ===== PASSWORD TOGGLE =====
+        function togglePasswordVisibility() {
+            const input = document.getElementById('inputPassword');
+            const btn = document.querySelector('.toggle-password');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+
+        // ===== TOAST =====
+        function showToast(msg, icon = '✅') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            document.querySelector('#toast .icon').textContent = icon;
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ===== SWITCH TAB =====
+        function switchTab(mode) {
+            if (isProcessing) return;
+            currentMode = mode;
+            const tabs = ['encrypt', 'decrypt', 'morse', 'unmorse'];
+            tabs.forEach(t => {
+                const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+                el.className = 'tab-btn';
+            });
+            document.getElementById('tab' + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add('active');
+
+            const labelInput = document.getElementById('labelInput');
+            const labelOutput = document.getElementById('labelOutput');
+            const actionBtn = document.getElementById('actionBtn');
+            const passwordGroup = document.getElementById('passwordGroup');
+            const morseContainer = document.getElementById('morsePreviewContainer');
+            const inputText = document.getElementById('inputText');
+            const outputText = document.getElementById('outputText');
+
+            inputText.value = '';
+            outputText.value = '';
+            passwordGroup.style.display = 'block';
+            morseContainer.style.display = 'none';
+            actionBtn.className = 'action-btn';
+
+            const labels = {
+                encrypt: { input: 'Pesan Asli (Plaintext)', output: 'Hasil Enkripsi (Ciphertext)', btn: '🔐 Proses Enkripsi', cls: '' },
+                decrypt: { input: 'Ciphertext (Hasil Enkripsi)', output: 'Pesan Asli (Plaintext)', btn: '🔓 Proses Dekripsi', cls: 'decrypt-mode' },
+                morse: { input: 'Pesan Biasa → Morse', output: 'Hasil Morse', btn: '📟 Konversi ke Morse', cls: 'morse-mode' },
+                unmorse: { input: 'Kode Morse → Biasa', output: 'Hasil Teks Biasa', btn: '🔊 Konversi ke Biasa', cls: '' }
+            };
+
+            const l = labels[mode];
+            labelInput.innerHTML = `<i class="fas fa-pen"></i> ${l.input}`;
+            labelOutput.innerHTML = `<i class="fas fa-clipboard"></i> ${l.output}`;
+            actionBtn.innerHTML = l.btn;
+            if (l.cls) actionBtn.classList.add(l.cls);
+
+            if (mode === 'morse' || mode === 'unmorse') {
+                passwordGroup.style.display = 'none';
+                morseContainer.style.display = 'block';
+                document.getElementById('morsePreview').textContent = mode === 'morse' ? 'Ketik pesan untuk lihat konversi Morse...' : 'Ketik kode Morse untuk lihat preview...';
+                document.getElementById('morsePreview').className = 'morse-preview empty';
+            }
+        }
+
+        // ===== REAL-TIME MORSE PREVIEW =====
+        document.getElementById('inputText').addEventListener('input', function() {
+            const preview = document.getElementById('morsePreview');
+            const text = this.value.trim();
+            if (currentMode === 'morse' && text) {
+                preview.textContent = textToMorse(text);
+                preview.className = 'morse-preview';
+            } else if (currentMode === 'unmorse' && text) {
+                const result = morseToText(text);
+                preview.textContent = result === text ? '❌ Kode Morse tidak valid' : result;
+                preview.className = 'morse-preview';
+            } else {
+                preview.textContent = currentMode === 'morse' ? 'Ketik pesan untuk lihat konversi Morse...' : 'Ketik kode Morse untuk lihat preview...';
+                preview.className = 'morse-preview empty';
+            }
+        });
+
+        // ===== CRYPTO =====
+        function str2ab(str) { return new TextEncoder().encode(str); }
+        function ab2str(buffer) { return new TextDecoder().decode(buffer); }
+        function bufferToBase64(buffer) {
+            let binary = '', bytes = new Uint8Array(buffer);
+            for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+            return window.btoa(binary);
+        }
+        function base64ToBuffer(base64) {
+            let binary = window.atob(base64), bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            return bytes.buffer;
+        }
+        async function getKey(password, salt) {
+            let enc = new TextEncoder();
+            let keyMaterial = await window.crypto.subtle.importKey("raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveKey"]);
+            return await window.crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+            );
+        }
+
+        // ===== MAIN PROCESS =====
+        async function processCrypto() {
+            if (isProcessing) return;
+            const text = document.getElementById('inputText').value;
+            const password = document.getElementById('inputPassword').value;
+            const outputText = document.getElementById('outputText');
+            const actionBtn = document.getElementById('actionBtn');
+
+            if (currentMode === 'morse') {
+                if (!text) { showToast('⚠️ Isi pesan dulu!', '⚠️'); return; }
+                outputText.value = textToMorse(text);
+                showToast('✅ Berhasil konversi ke Morse!', '📟');
+                return;
+            }
+            if (currentMode === 'unmorse') {
+                if (!text) { showToast('⚠️ Isi kode Morse dulu!', '⚠️'); return; }
+                const result = morseToText(text);
+                if (result === text) { showToast('⚠️ Bukan kode Morse yang valid!', '⚠️'); return; }
+                outputText.value = result;
+                showToast('✅ Berhasil konversi ke teks biasa!', '🔊');
+                return;
+            }
+
+            if (!text) { showToast('⚠️ Isi pesan dulu!', '⚠️'); return; }
+            if (!password) { showToast('⚠️ Isi kata sandi dulu!', '⚠️'); return; }
+            // ===== MINIMAL PASSWORD 2 DIGIT =====
+            if (password.length < 2) { showToast('⚠️ Kata sandi minimal 2 karakter!', '⚠️'); return; }
+
+            isProcessing = true;
+            actionBtn.disabled = true;
+            actionBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+            try {
+                if (currentMode === 'encrypt') {
+                    let salt = window.crypto.getRandomValues(new Uint8Array(16));
+                    let iv = window.crypto.getRandomValues(new Uint8Array(12));
+                    let key = await getKey(password, salt);
+                    let encrypted = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, str2ab(text));
+                    let combined = new Uint8Array(16 + 12 + encrypted.byteLength);
+                    combined.set(salt, 0);
+                    combined.set(iv, 16);
+                    combined.set(new Uint8Array(encrypted), 28);
+                    outputText.value = bufferToBase64(combined);
+                    showToast('✅ Pesan berhasil dienkripsi!', '🔐');
+                } else {
+                    try {
+                        let combined = base64ToBuffer(text);
+                        let salt = combined.slice(0, 16);
+                        let iv = combined.slice(16, 28);
+                        let data = combined.slice(28);
+                        let key = await getKey(password, salt);
+                        let decrypted = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, data);
+                        outputText.value = ab2str(decrypted);
+                        showToast('✅ Pesan berhasil didekripsi!', '🔓');
+                    } catch (e) {
+                        showToast('❌ Kata sandi salah atau ciphertext rusak!', '❌');
+                        outputText.value = '';
+                    }
+                }
+            } catch (e) {
+                showToast('❌ Error: ' + e.message, '❌');
+            }
+            isProcessing = false;
+            actionBtn.disabled = false;
+            const labels = {
+                encrypt: '<i class="fas fa-lock"></i> Proses Enkripsi',
+                decrypt: '<i class="fas fa-unlock"></i> Proses Dekripsi',
+                morse: '<i class="fas fa-code"></i> Konversi ke Morse',
+                unmorse: '<i class="fas fa-undo"></i> Konversi ke Biasa'
+            };
+            actionBtn.innerHTML = labels[currentMode] || 'Proses';
+        }
+
+        // ===== COPY OUTPUT =====
+        function copyOutput() {
+            const el = document.getElementById('outputText');
+            if (!el.value) { showToast('⚠️ Gak ada hasil buat disalin!', '⚠️'); return; }
+            navigator.clipboard.writeText(el.value);
+            showToast('✅ Hasil berhasil disalin!', '📋');
+        }
+
+        // ===== KEYBOARD SHORTCUT =====
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                processCrypto();
+            }
+        });
+
+        console.log('🔥 VaultCrypt — Premium Design by X-Karzx Xyanx!');
+    </script>
+</body>
+</html>
